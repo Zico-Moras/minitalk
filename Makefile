@@ -15,7 +15,6 @@ LIBS = $(LIBFT) $(PRINTF)
 
 CFLAGS = -Wall -Werror -Wextra -g
 
-
 all:$(LIBS) $(NAME)
 
 $(NAME):
