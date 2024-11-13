@@ -37,48 +37,39 @@ char	*join_bit(char *str, char n)
 	return (new);
 }
 
-void	sig_handler(int signum, siginfo_t *info, void *context)
+void	sig_handler(int sig)
 {
-	static t_bits_state	state;
-	(void)context;
+	static int	current_char;
+	static int	bit;
+	static char	*string;
 
-	usleep(500);
-	if (signum == SIGUSR1)
+	if (sig == SIGUSR1)
+		current_char |= (1 << (7 - bit));
+	bit++;
+	if (bit == 8)
 	{
-		state.current_char |= (1 << (7 - state.bit));
-		kill(info->si_pid, SIGUSR1);
-	}
-	else
-		kill(info->si_pid, SIGUSR2);
-
-	state.bit++;
-	if (state.bit == 8)
-	{
-		if (state.current_char == '\0')
+		if (current_char == '\0')
 		{
-			ft_printf("%s\n", state.string);
-			free(state.string);
-			state.string = NULL;
+			ft_printf("%s\n", string);
+			free(string);
+			string = NULL;
 		}
 		else
-			state.string = join_bit(state.string, state.current_char);
-		state.bit = 0;
-		state.current_char = 0;
+			string = join_bit(string, current_char);
+		bit = 0;
+		current_char = 0;
 	}
 }
 
 int	main(void)
 {
 	int	id;
-	struct sigaction	sa;
 
-	sa.sa_sigaction = sig_handler;
 	id = getpid();
-	ft_printf("Server PID: %d\n", id);
-	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
+	ft_printf("%d\n", id);
 	while (1)
 	{
-		pause();
+		signal(SIGUSR1, sig_handler);
+		signal(SIGUSR2, sig_handler);
 	}
 }

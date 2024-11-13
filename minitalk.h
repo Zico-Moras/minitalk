@@ -18,21 +18,11 @@
 # include "./libft/printf/ft_printf.h"
 # include <signal.h>
 
-
-//structures
-
-typedef struct s_bit_state
-{
-	int	current_char;
-	int	bit;
-	char	*string;
-	
-}	t_bits_state;
 //functions
 //
 //server
 char	*join_bit(char *str, char n);
-void	sig_handler(int signum, siginfo_t *info, void *context);
+void	sig_handler(int sig);
 //client
 int		sleeper(int len);
 void	send_string(char *str, int id);
