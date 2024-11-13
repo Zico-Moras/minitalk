@@ -44,17 +44,28 @@ void	send_string(char *str, int id)
 			else
 				kill(id, SIGUSR2);
 			bits--;
-			usleep(sleeper(ft_strlen(str)));
+			//usleep(sleeper(ft_strlen(str)));
+			pause();
 		}
 		i++;
 		bits = 7;
 	}
-	usleep(ft_strlen(str));
 	return ;
+}
+
+void	ack_handler(int signum)
+{
+	if (signum == SIGUSR1)
+		ft_printf("received 1\n");
+	else if (signum == SIGUSR2)
+		ft_printf("received 0\n");
 }
 
 int	main(int ac, char **av)
 {
+
+	signal(SIGUSR1, &ack_handler);
+	signal(SIGUSR2, &ack_handler);
 	if (3 != ac)
 	{
 		ft_printf("error: Type ./client server_pid \"string\"");
